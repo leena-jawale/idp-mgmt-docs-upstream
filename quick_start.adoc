@@ -284,10 +284,12 @@ At this point, any managed cluster that matches your Placement should be updated
 You will be able to login with the ldap user.
 
 [#openid-authentication]
-OpenID identity provider configuration provides identities for users authenticating using OpenID credentials. You can configure Red Hat Single Sign-On as an OpenID Connect identity provider.
+== OpenID authentication
+
+You can configure your AuthRealm to integrate with an OpenID Connect identity provider, such as Red Hat Single Sign-On.
 
 === AuthRealm custom resource for OpenID
-An example of an AuthRealm custom resource configured for the OpenID identity provider is provided below. Make note of the `identityProviders` field and the configuration of the `opeinid` identity provider under it:
+An example of an AuthRealm custom resource configured with an OpenID identity provider is provided below. Make note of the `identityProviders` field and the configuration of the `opeinid` identity provider under it:
 [source,yaml]
 ----
 apiVersion: identityconfig.identitatem.io/v1alpha1
@@ -324,8 +326,8 @@ An entry under `identityProviders` has the following fields:
 - `type` specifies the identity provider type and it is set to OpenID.
 - `mappingMethod` (add, claim or lookup) controls how mappings are established between this provider’s identities and User objects.
 - `openID` contains the OpenID specific configurations:
-  * `clientID` contains the client ID of OAuth.
-  * `clientSecret` contains a reference to a secret object containing the client secret of OAuth. 
+  * `clientID` contains the client ID of a client registered with the OpenID provider.
+  * `clientSecret` contains a reference to a secret object containing the OpenID client secret. 
   - `claims` maps attributes on the user entry.
     * `preferredUsername` is the list of attributes whose values should be used as the preferred username. Optional. If unspecified, the preferred username is determined from the value of the sub claim
     * `name` is the list of attributes whose values should be used as the display name. Optional. If unspecified, no display name is set for the identity
