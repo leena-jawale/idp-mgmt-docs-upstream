@@ -5,6 +5,7 @@
 * <<creating-auth-realm,Creating your AuthRealm>>
 * <<github-authentication,GitHub authentication>>
 * <<ldap-authentication,LDAP authentication>>
+* <<openid-authentication,OpenID authentication>>
 * <<byo-cert,Using a custom certificate>>
 * <<command-line-interface,Command line interface>>
 
@@ -266,11 +267,11 @@ An entry under `identityProviders` has the following fields:
 *Note*: bindDN and bindPassword need to be provided if the LDAP server requires authentication for search.
   * `ca` contains reference to the secret containing a trusted Root CA file - file name and format: "ca.crt"
 *Note*: If the server uses self-signed certificates, include files with names "tls.crt" and "tls.key" (representing client certificate and key) in the same secret
-- `attributes` maps LDAP attributes to identities
-  * `id` is the list of attributes whose values should be used as the user ID. Required. First non-empty attribute is used. At least one attribute is required. If none of the liste attribute have a value, authentication fails. LDAP standard identity attribute is "dn"
-  * `preferredUsername` is the list of attributes whose values should be used as the preferred username. LDAP standard login attribute is "uid"
-  * `name` is the list of attributes whose values should be used as the display name. Optional. If unspecified, no display name is set for the identity. LDAP standard display name attribute is "cn"
-  * `email` is the list of attributes whose values should be used as the email address. Optional. If unspecified, no email is set for the identity
+  - `attributes` maps LDAP attributes to identities
+    * `id` is the list of attributes whose values should be used as the user ID. Required. First non-empty attribute is used. At least one attribute is required. If none of the liste attribute have a value, authentication fails. LDAP standard identity attribute is "dn"
+    * `preferredUsername` is the list of attributes whose values should be used as the preferred username. LDAP standard login attribute is "uid"
+    * `name` is the list of attributes whose values should be used as the display name. Optional. If unspecified, no display name is set for the identity. LDAP standard display name attribute is "cn"
+    * `email` is the list of attributes whose values should be used as the email address. Optional. If unspecified, no email is set for the identity
 
   To create your AuthRealm, copy the sample yaml above and update as appropriate with your ldap configuration, preferred names, namespace, route subdomain, and mapping method. Then, run the following command on your hub cluster:
 
@@ -282,6 +283,65 @@ oc create -f <authrealm_file_name>.yaml
 At this point, any managed cluster that matches your Placement should be updated with an OAuth configuration that leverages an OpenID identity provider to connect to the proxy server that identity configuration management has stood up under the covers. Allow several minutes for the new login button to appear on your managed cluster.
 You will be able to login with the ldap user.
 
+[#openid-authentication]
+== OpenID authentication
+
+You can configure your AuthRealm to integrate with an OpenID Connect identity provider, such as Red Hat Single Sign-On.
+
+=== AuthRealm custom resource for OpenID
+An example of an AuthRealm custom resource configured with an OpenID identity provider is provided below. Make note of the `identityProviders` field and the configuration of the `opeinid` identity provider under it:
+[source,yaml]
+----
+apiVersion: identityconfig.identitatem.io/v1alpha1
+kind: AuthRealm
+metadata:
+  name: authrealm-openid
+  namespace: authrealm-openid-ns
+spec:
+  placementRef:
+    name: dev-clusters-placement
+  routeSubDomain: identitatem-devs
+  type: dex
+  identityProviders:
+    - name: identitatem-developers
+      mappingMethod: add
+      type: OpenID
+      openID:
+        clientID: 41c30d83fd1b4774f871
+        clientSecret:
+          name: identitatem-openid-client-secret  
+        claims:
+          preferredUsername:
+            - username
+          name:
+            - name
+          email:
+            - mail
+----
+
+The `identityProviders` list contains the configurations for one or more identity providers. The example above contains a single identity provider (OpenID).
+An entry under `identityProviders` has the following fields:
+
+- `name` contains the unique name that is used to identify the identity provider.
+- `type` specifies the identity provider type and it is set to OpenID.
+- `mappingMethod` (add, claim or lookup) controls how mappings are established between this provider’s identities and User objects.
+- `openID` contains the OpenID specific configurations:
+  * `clientID` contains the client ID of a client registered with the OpenID provider.
+  * `clientSecret` contains a reference to a secret object containing the OpenID client secret. 
+  - `claims` maps attributes on the user entry.
+    * `preferredUsername` is the list of attributes whose values should be used as the preferred username. Optional. If unspecified, the preferred username is determined from the value of the sub claim
+    * `name` is the list of attributes whose values should be used as the display name. Optional. If unspecified, no display name is set for the identity
+    * `email` is the list of attributes whose values should be used as the email address. Optional. If unspecified, no email is set for the identity
+
+To create your AuthRealm, copy the sample yaml above and update as appropriate with your OpenID configuration, preferred names, namespace, route subdomain, and mapping method. Then, run the following command on your hub cluster:
+
+[source,terminal]
+----
+oc create -f <authrealm_file_name>.yaml
+----
+
+At this point, any managed cluster that matches your Placement should be updated with an OAuth configuration that leverages an OpenID identity provider to connect to the proxy server that identity configuration management has stood up under the covers. Allow several minutes for the new login button to appear on your managed cluster.
+You will be able to login with the OpenID authentication.
 
 [#byo-cert]
 == Using a custom certificate
