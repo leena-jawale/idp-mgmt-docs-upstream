@@ -171,7 +171,7 @@ metadata:
 spec:
   sourceNamespace: openshift-marketplace
   source: redhat-operators
-  channel: release-1.0
+  channel: alpha
   installPlanApproval: Automatic
   name: idp-mgmt-operator
 ----
