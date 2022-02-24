@@ -59,7 +59,7 @@ oc get groups
 or if you have `cm-cli` with from the hub.
 [source,shell]
 ----
-cm with cc itdove-4-10-rc4 -- oc get groups 
+cm with cc <your_clusterclaim_name> -- oc get groups 
 ----
 result:
 ```
