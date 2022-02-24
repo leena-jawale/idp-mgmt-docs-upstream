@@ -1,0 +1,69 @@
+[#groups]
+= Import groups from the IDP provider for OCP 4.10+
+
+
+[#introduction]
+== Introduction
+
+In OpenShift 4.10, a new capability was added to import groups from an IDP provder. For example, while using LDAP, you can import the groups of which a user is member of. This allows you to create RBAC based on your IDP provider group.
+
+[#LDAP Configuration]
+== LDAP Configuration with Dex
+
+In the Authrealm, you can add a section explaining how to query the groups the user belong too.
+
+Let's say for example you have this ldap entries.
+
+[source,shell]
+----
+# testuser, example.com
+dn: cn=testuser,dc=example,dc=com
+objectClass: person
+objectClass: inetOrgPerson
+sn: user
+cn: test
+cn: testuser
+mail: testuser@example.com
+userPassword:: Zm9vYmFy
+
+# mygroup, example.com
+dn: cn=mygroup,dc=example,dc=com
+objectClass: groupOfNames
+cn: mygroup
+member: cn=testuser,dc=example,dc=com
+----
+
+You can add in your Authrealm the LDAPExtraConfigs section to inform Dex how to retreive the groups:app-name: 
+
+[source,yalm]
+----
+  ldapExtraConfigs:
+    <your_idp_name>:
+      baseDN: dc=example,dc=com
+      filter: (objectClass=person)
+      groupSearch:
+        baseDN: dc=example,dc=com
+        filter: (objectClass=groupOfNames)
+        nameAttr: cn
+        userMatchers:
+        - groupAttr: member
+          userAttr: DN
+----
+
+Now when the user `testuser@example.com` will login, the group `mygroup` will be automatically created on the managed cluster.
+
+[#Github Configuration]
+== Github Configuration with Dex
+
+Dex creates groups by concatenating orgs and teams. Unfortunatly, a defect prevent to make it works. Once the defect is solved you can apply the below configuration to import the groups into the managed cluster.
+
+In the Authrealm you can add this section:
+
+[source,yalm]
+----
+   githubExtraConfigs:
+     <your_idp_name>:
+       loadAllGroups: true
+----
+
+You might want also specify "orgs" in your idp to avoid to import all orgs/teams as group.
