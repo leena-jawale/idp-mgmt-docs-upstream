@@ -5,7 +5,7 @@
 [#introduction]
 == Introduction
 
-In OpenShift 4.10, a new capability was added to import groups from an IDP provder. For example, while using LDAP, you can import the groups of which a user is member of. This allows you to create RBAC based on your IDP provider group.
+In OpenShift 4.10, a new capability was added to import groups from an IDP provider. For example, while using LDAP, you can import the groups of which a user is member of. This allows you to create RBAC based on your IDP provider group.
 
 [#LDAP Configuration]
 == LDAP Configuration
@@ -50,4 +50,19 @@ You can add in your Authrealm the LDAPExtraConfigs section to import the groups
           userAttr: DN
 ----
 
-Now when the user `testuser@example.com` will login, the group `mygroup` will be automatically created on the managed cluster.
+Now when the user `testuser@example.com` will login, the group `mygroup` will be automatically created on the managed cluster. You can check it after login to the managedcluster with admin role by running this command.
+
+[source,shell]
+----
+oc get groups
+----
+or if you have `cm-cli` with from the hub.
+[source,shell]
+----
+cm with cc itdove-4-10-rc4 -- oc get groups 
+----
+result:
+```
+NAME      USERS
+mygroup   testuser@example.com
+```
