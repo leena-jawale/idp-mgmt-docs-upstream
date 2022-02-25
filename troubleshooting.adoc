@@ -81,7 +81,8 @@ Check the status.decision list contains an entry for the managed cluster.  If no
 . From the OpenShift Container Platform console UI on the managed cluster, navigate to Administration->Cluster Settings->ClusterOperators. Check the Status of the `authentication` operator, and if it is not showing green Available, check the Message for an indication of the error.
 +
 image::./images/authentication_operator_error.png["authentication operator error message indicates certificate error"]
-
++
+[#authentication-operator-log]
 . From the OpenShift Container Platform console UI on the managed cluster, navigate to pods and search "authentication-operator". Check the logs for errors.
 +
 image::./images/authentication-operator-logs.png[authentication operator logs]
@@ -279,3 +280,12 @@ image::./images/invalid_bind_credentials.png["Error - Invalid bind credentials"]
 ** Check that the correct certificate was provided in the secret that is referenced in the `ca` field  for the ldap identity provider in the AuthRealm CR.
 +
 image::./images/ldap_ca_error.png["Error - Incorrect certificate for LDAP server"]
+
+[#Import groups troubleshoot]
+=== troubleshoot import groups
+
+==== Groups are not created.
+
+* Check the dex-server logs if the groups are displaied, if not you probably have an issue with the relationship between the user and the group in your IDP configuration. For example for LDAP, the user is not a member of the group.
+
+* Check the authentication-operator log for errors: <<authentication-operator-log,Authentication Operator Log>>
