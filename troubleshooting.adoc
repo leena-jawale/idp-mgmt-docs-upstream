@@ -281,6 +281,15 @@ image::./images/invalid_bind_credentials.png["Error - Invalid bind credentials"]
 +
 image::./images/ldap_ca_error.png["Error - Incorrect certificate for LDAP server"]
 
+[#Import groups troubleshoot]
+=== troubleshoot import groups
+
+==== Groups are not created.
+
+* Check the dex-server logs if the groups are displaied, if not you probably have an issue with the relationship between the user and the group in your IDP configuration. For example for LDAP, the user is not a member of the group.
+
+* Check the authentication-operator log for errors: <<authentication-operator-log,Authentication Operator Log>>
+
 [#openid-failures]
 == OpenID related issues
 
@@ -291,13 +300,3 @@ If you receive the following error:
 image::./images/openid_invalid_scope_error.png["Error - OpenID invalid scope"]
 
 The OpenID client needs to add default or optional client scopes for profile and email.
-
-
-[#Import groups troubleshoot]
-=== troubleshoot import groups
-
-==== Groups are not created.
-
-* Check the dex-server logs if the groups are displaied, if not you probably have an issue with the relationship between the user and the group in your IDP configuration. For example for LDAP, the user is not a member of the group.
-
-* Check the authentication-operator log for errors: <<authentication-operator-log,Authentication Operator Log>>
