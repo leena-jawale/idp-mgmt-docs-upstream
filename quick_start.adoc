@@ -75,7 +75,7 @@ metadata:
 spec:
   identityProviders:
   - github:
-      clientID: 41c30d83fd1b4774f871
+      clientID: <Github OAuth client ID>
       clientSecret:
         name: identitatem-github-client-secret
       organizations:
@@ -139,7 +139,7 @@ metadata:
 spec:
   identityProviders:
   - github:
-      clientID: 41c30d83fd1b4774f871
+      clientID: <Github OAuth client ID>
       clientSecret:
         name: identitatem-github-client-secret
       organizations:
@@ -230,7 +230,7 @@ spec:
       type: LDAP
       mappingMethod: add
       ldap:
-        url: a438af6d7959d448fb56138b20e2bbba-2094583330.us-east-1.elb.amazonaws.com:636
+        url: <LDAP server URL>
         insecure: false
         bindDN: cn=Manager,dc=example,dc=com
         ca:
@@ -307,7 +307,7 @@ spec:
       mappingMethod: add
       type: OpenID
       openID:
-        clientID: 41c30d83fd1b4774f871
+        clientID: <OpenID client ID>
         clientSecret:
           name: identitatem-openid-client-secret
         claims:
