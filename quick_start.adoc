@@ -336,10 +336,11 @@ An entry under `identityProviders` has the following fields:
   ----
 
   - `claims` maps attributes on the user entry.
-    * `preferredUsername` is the list of attributes whose values should be used as the preferred username. Optional. If unspecified, the preferred username is determined from the value of the sub claim
-    * `name` is the list of attributes whose values should be used as the display name. Optional. If unspecified, no display name is set for the identity
-    * `email` is the list of attributes whose values should be used as the email address. Optional. If unspecified, no email is set for the identity
+    * `preferredUsername` is the list of attributes whose values should be used as the preferred username. Optional. If unspecified, the preferred username is determined from the value of the sub claim. OpenShift supports an array of preferredUsername, but identity configuration management for Kubernetes is only supporting the first value from the array.
+    * `name` is the list of attributes whose values should be used as the display name. Optional. If unspecified, no display name is set for the identity. OpenShift supports an array of name, but identity configuration management for Kubernetes is only supporting the first value from the array.
+    * `email` is the list of attributes whose values should be used as the email address. Optional. If unspecified, no email is set for the identity. OpenShift supports an array of email, but identity configuration management for Kubernetes is only supporting the first value from the array.
   - `issuer` the URL of the OpenID authentication provider.
+
 
 To create your AuthRealm, copy the sample yaml above and update as appropriate with your OpenID configuration, preferred names, namespace, route subdomain, and mapping method. Then, run the following command on your hub cluster:
 
