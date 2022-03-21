@@ -286,7 +286,9 @@ You will be able to login with the ldap user.
 [#openid-authentication]
 == OpenID authentication
 
-You can configure your AuthRealm to integrate with an OpenID Connect identity provider, such as Red Hat Single Sign-On.
+Version 0.3.1 of the technology preview introduces limited support for integrating with OpenID Connect identity providers. We have only tested the integration with dex, Keycloak, and Red Hat's own external SSO (sso.redhat.com).
+
+*NOTE:* When integrating with Keycloak, ensure the Keycloak client has default or optional client scopes enabled for email and profile.
 
 === AuthRealm custom resource for OpenID
 An example of an AuthRealm custom resource configured with an OpenID identity provider is provided below. Make note of the `identityProviders` field and the configuration of the `opeinid` identity provider under it:
