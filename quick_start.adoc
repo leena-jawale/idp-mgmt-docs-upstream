@@ -48,14 +48,14 @@ Now a placement can be created.  This will be used to determine which managed cl
 
 [IMPORTANT]
 ====
-The identity configuration management for Kubernetes Technology Preview does not yet utilize custom role definitions for controlling access to work with AuthRealms. Instead, it relies on the role-based access control implemented by multicluster engine and Advanced Cluster Management around ManagedClusterSets, ManagedClusterSetBindings, and Placements. AuthRealms must exist in a namespace containing a Placement, and the Placement leverages the ManagedClusterSets that are bound to that namespace. Access to namespaces with existing bound ManagedClusterSets and/or existing Placements should be managed accordingly. 
+The identity configuration management for Kubernetes Technology Preview does not yet utilize custom role definitions for controlling access to work with AuthRealms. Instead, it relies on the role-based access control implemented by multicluster engine and Advanced Cluster Management around ManagedClusterSets, ManagedClusterSetBindings, and Placements. AuthRealms must exist in a namespace containing a Placement, and the Placement leverages the ManagedClusterSets that are bound to that namespace. Access to namespaces with existing bound ManagedClusterSets and/or existing Placements should be managed accordingly.
 ====
 
 [IMPORTANT]
 ====
 If you are using v0.1.0, before detaching a cluster from the hub, you must make sure the managed cluster is no longer managed by identity configuration management. You can remove the cluster from identity configuration management either by removing the cluster from the ManagedClusterSet, or by removing labels from the managed cluster as appropriate to no longer match the Placement. Once your cluster no longer matches the Placement of any AuthRealm, your original OAuth configuration should be restored on the cluster. If the cluster is detached without first being unmanaged from identity provider management, you will lose access to the cluster.
 
-If you are using v0.2.0 or higher, it is recommended that you follow the steps above to take the cluster out of identity configuration management prior to detaching the cluster from the hub. In this case, your original OAuth configuration should be restored for you on the managed cluster, and you can then detach the cluster from the hub. As an alternative, prior to detaching the managed cluster from the hub, you can copy your original OAuth from the ConfigMap named `idp-oauth-original` in the managed cluster's namespace on the hub cluster. After the cluster is completely detached from the hub cluster, manually edit the OAuth on the cluster you've just detached and refer to the contents of the idp-oauth-original ConfigMap to restore your original OAuth configuration. 
+If you are using v0.2.0 or higher, it is recommended that you follow the steps above to take the cluster out of identity configuration management prior to detaching the cluster from the hub. In this case, your original OAuth configuration should be restored for you on the managed cluster, and you can then detach the cluster from the hub. As an alternative, prior to detaching the managed cluster from the hub, you can copy your original OAuth from the ConfigMap named `idp-oauth-original` in the managed cluster's namespace on the hub cluster. After the cluster is completely detached from the hub cluster, manually edit the OAuth on the cluster you've just detached and refer to the contents of the idp-oauth-original ConfigMap to restore your original OAuth configuration.
 ====
 
 
@@ -75,7 +75,7 @@ metadata:
 spec:
   identityProviders:
   - github:
-      clientID: 41c30d83fd1b4774f871
+      clientID: <Github OAuth client ID>
       clientSecret:
         name: identitatem-github-client-secret
       organizations:
@@ -139,7 +139,7 @@ metadata:
 spec:
   identityProviders:
   - github:
-      clientID: 41c30d83fd1b4774f871
+      clientID: <Github OAuth client ID>
       clientSecret:
         name: identitatem-github-client-secret
       organizations:
@@ -230,7 +230,7 @@ spec:
       type: LDAP
       mappingMethod: add
       ldap:
-        url: a438af6d7959d448fb56138b20e2bbba-2094583330.us-east-1.elb.amazonaws.com:636
+        url: <LDAP server URL>
         insecure: false
         bindDN: cn=Manager,dc=example,dc=com
         ca:
@@ -286,7 +286,9 @@ You will be able to login with the ldap user.
 [#openid-authentication]
 == OpenID authentication
 
-You can configure your AuthRealm to integrate with an OpenID Connect identity provider, such as Red Hat Single Sign-On.
+Version 0.3.1 of the technology preview introduces limited support for integrating with OpenID Connect identity providers. We have only tested the integration with dex, Keycloak, and Red Hat's own external SSO (sso.redhat.com).
+
+*NOTE:* When integrating with Keycloak, ensure the Keycloak client has default or optional client scopes enabled for email and profile.
 
 === AuthRealm custom resource for OpenID
 An example of an AuthRealm custom resource configured with an OpenID identity provider is provided below. Make note of the `identityProviders` field and the configuration of the `opeinid` identity provider under it:
@@ -307,9 +309,9 @@ spec:
       mappingMethod: add
       type: OpenID
       openID:
-        clientID: 41c30d83fd1b4774f871
+        clientID: <OpenID client ID>
         clientSecret:
-          name: identitatem-openid-client-secret  
+          name: identitatem-openid-client-secret
         claims:
           preferredUsername:
             - username
@@ -317,6 +319,7 @@ spec:
             - name
           email:
             - mail
+        issuer: <openid auth URL>
 ----
 
 The `identityProviders` list contains the configurations for one or more identity providers. The example above contains a single identity provider (OpenID).
@@ -327,11 +330,19 @@ An entry under `identityProviders` has the following fields:
 - `mappingMethod` (add, claim or lookup) controls how mappings are established between this provider’s identities and User objects.
 - `openID` contains the OpenID specific configurations:
   * `clientID` contains the client ID of a client registered with the OpenID provider.
-  * `clientSecret` contains a reference to a secret object containing the OpenID client secret. 
+  * `clientSecret` contains a reference to a secret object containing the OpenID client secret.
+  +
+  [source,terminal]
+  ----
+  oc create secret generic <openid-oauth-clientID-name> --from-literal=clientSecret=<openid-oauth-clientID-secret>
+  ----
+
   - `claims` maps attributes on the user entry.
     * `preferredUsername` is the list of attributes whose values should be used as the preferred username. Optional. If unspecified, the preferred username is determined from the value of the sub claim. OpenShift supports an array of preferredUsername, but identity configuration management for Kubernetes is only supporting the first value from the array.
     * `name` is the list of attributes whose values should be used as the display name. Optional. If unspecified, no display name is set for the identity. OpenShift supports an array of name, but identity configuration management for Kubernetes is only supporting the first value from the array.
     * `email` is the list of attributes whose values should be used as the email address. Optional. If unspecified, no email is set for the identity. OpenShift supports an array of email, but identity configuration management for Kubernetes is only supporting the first value from the array.
+  - `issuer` the URL of the OpenID authentication provider.
+
 
 To create your AuthRealm, copy the sample yaml above and update as appropriate with your OpenID configuration, preferred names, namespace, route subdomain, and mapping method. Then, run the following command on your hub cluster:
 
@@ -483,4 +494,3 @@ Then the my-authrealm-yamls.yaml can be applied using
 ----
 oc apply -f my-authrealm-yamls.yaml
 ----
-

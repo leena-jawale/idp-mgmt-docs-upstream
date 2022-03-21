@@ -10,7 +10,7 @@ You launched the IDP installation from the OperatorHub and the installation fail
 +
 [source,terminal]
 ----
-oc logs -l control-plane=controller-manager -n <idp-installation-namespace> 
+oc logs -l control-plane=controller-manager -n <idp-installation-namespace>
 ----
 A message similar to the following means the prerequisite are not met.
 +
@@ -20,7 +20,7 @@ A message similar to the following means the prerequisite are not met.
 ----
 
 [#Error-on-operator-page]
-== Error appears on operator page after installing through OperatorHub 
+== Error appears on operator page after installing through OperatorHub
 
 After instaling "identity configuration management", the "operator page" shows a 404 error.
 
@@ -52,7 +52,7 @@ Once the deletion done, reinstall the "identity configuration management" again.
 You've created your AuthRealm and updated your managed cluster as appropriate such that it should match the Placement, but the new login option is not appearing on your managed cluster. Follow the steps below to determine the issue.
 
 . Wait several minutes. It takes time for the OpenShift authentication pods to restart and reflect the new configuration.
-. If the button does not appear after several minutes, run the following on the managed cluster to confirm the cluster OAuth configuration was propagated correctly from the hub: `oc get oauth cluster -oyaml` You should see an identity provider with a name matching your AuthRealm name and an issuer URL that reflects your hub cluster URL and routeSubDomain. If you do, continue to the next step. If not, check the following on the hub cluster: 
+. If the button does not appear after several minutes, run the following on the managed cluster to confirm the cluster OAuth configuration was propagated correctly from the hub: `oc get oauth cluster -oyaml` You should see an identity provider with a name matching your AuthRealm name and an issuer URL that reflects your hub cluster URL and routeSubDomain. If you do, continue to the next step. If not, check the following on the hub cluster:
 * Check the AuthRealm
 +
 [source,terminal]
@@ -62,13 +62,13 @@ oc get authrealm <AuthRealm name> -n <AuthRealm namespace> -o yaml
 And verify the status.condition.type:Applied has a status of **"True"**.  If the status is false, check the reason and message.
 Note: Applied **"True"** just mean the AuthRealm was successfully processed by the controller and subsequent resources are created; it doesn't mean the managed cluster authentication system is successfully updated.
 
-* Check for a ManifestWork named **idp-oauth** in the managed cluster namespace.  
+* Check for a ManifestWork named **idp-oauth** in the managed cluster namespace.
 +
 [source,terminal]
 ----
 oc get manifestworks idp-oauth -n <managed cluster namespace> -o yaml
 ----
-And verify the status.condition.type:Applied has a status of **"True"**.  If the status is false, wait a minute or two and recheck.  If the ManifestWork does not exist, check the following on the hub cluster: 
+And verify the status.condition.type:Applied has a status of **"True"**.  If the status is false, wait a minute or two and recheck.  If the ManifestWork does not exist, check the following on the hub cluster:
 
 * Check the PlacementDecision in the AuthRealm namespace to be sure the managed cluster was properly selected as part of the Placement and ManagedClusterSet.
 +
@@ -230,8 +230,8 @@ If the AuthRealm custom resource specifies one or more values in the `github.org
 
 image::./images/github_org_error.png["GitHub authentication error - user not in required org"]
 
-* Check that the user attempting login is a member of at least one of the GitHub organizations specified in the AuthRealm. 
-* If the GitHub OAuth application is not owned by an organization specified in `github.organizations`, an organization owner must grant third-party access to use this option. 
+* Check that the user attempting login is a member of at least one of the GitHub organizations specified in the AuthRealm.
+* If the GitHub OAuth application is not owned by an organization specified in `github.organizations`, an organization owner must grant third-party access to use this option.
 
 === Internal Server Error: missing access_token
 
@@ -240,7 +240,7 @@ If after you press the OpenShift login button, you see a page displaying "Intern
 ----
 $ oc get secret <your_secret_name> -n <your_authrealm_namespace> -ojson | jq -r '.data.clientSecret' | base64 -d
 ----
-You can match the trailing 8 characters of the base64-decoded secret with the Client secrets listed on your GitHub OAuth page. GitHub also indicates when the secret was last used, which can be a clue as to whether your client secret has been applied successfully. 
+You can match the trailing 8 characters of the base64-decoded secret with the Client secrets listed on your GitHub OAuth page. GitHub also indicates when the secret was last used, which can be a clue as to whether your client secret has been applied successfully.
 
 [#ldap-failures]
 == LDAP related issues
@@ -289,3 +289,14 @@ image::./images/ldap_ca_error.png["Error - Incorrect certificate for LDAP server
 * Check the dex-server logs if the groups are displaied, if not you probably have an issue with the relationship between the user and the group in your IDP configuration. For example for LDAP, the user is not a member of the group.
 
 * Check the authentication-operator log for errors: <<authentication-operator-log,Authentication Operator Log>>
+
+[#openid-failures]
+== OpenID related issues
+
+=== Invalid scopes: openid profile email
+
+If you receive the following error:
+
+image::./images/openid_invalid_scope_error.png["Error - OpenID invalid scope"]
+
+The OpenID client needs to add default or optional client scopes for profile and email.
