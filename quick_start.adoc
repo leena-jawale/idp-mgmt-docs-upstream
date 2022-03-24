@@ -331,11 +331,12 @@ An entry under `identityProviders` has the following fields:
 - `openID` contains the OpenID specific configurations:
   * `clientID` contains the client ID of a client registered with the OpenID provider.
   * `clientSecret` contains a reference to a secret object containing the OpenID client secret.
-  +
-  [source,terminal]
-  ----
-  oc create secret generic <openid-oauth-clientID-name> --from-literal=clientSecret=<openid-oauth-clientID-secret>
-  ----
+  Example secret:
++
+[source,terminal]
+----
+oc create secret generic <openid-oauth-clientID-name> --from-literal=clientSecret=<openid-oauth-clientID-secret>
+----
 
   - `claims` maps attributes on the user entry.
     * `preferredUsername` is the list of attributes whose values should be used as the preferred username. Optional. If unspecified, the preferred username is determined from the value of the sub claim. OpenShift supports an array of preferredUsername, but identity configuration management for Kubernetes is only supporting the first value from the array.
