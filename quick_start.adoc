@@ -286,7 +286,7 @@ You will be able to login with the ldap user.
 [#openid-authentication]
 == OpenID authentication
 
-Version 0.3.1 of the technology preview introduces limited support for integrating with OpenID Connect identity providers. We have only tested the integration with dex, Keycloak, and Red Hat's own external SSO (sso.redhat.com).
+Version 0.3.1 of the technology preview introduces limited support for integrating with OpenID Connect identity providers. We have only tested the integration with dex, Keycloak, and Red Hat Single Sign-On.
 
 *NOTE:* When integrating with Keycloak, ensure the Keycloak client has default or optional client scopes enabled for email and profile.
 
