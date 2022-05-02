@@ -49,7 +49,7 @@ Once the deletion done, reinstall the "identity configuration management" again.
 [#general-authrealm-status]
 == General AuthRealm troubleshooting
 
-The AuthRealm resource contains status information not only for itself, but for child resources used in configuring OAuth for your managed clusters. These child resources can include Strategy, Placement, ClusterOAuth and ManifesWork. The AuthRealm status should be the first place you check if the AuthRealm does not function properly. The AuthRealm status and conditions will allow you to quickly identify any resources that are not working properly and speed up the ability to apply corrective actions to fix the issue.
+The AuthRealm resource contains status information not only for itself, but for child resources used in configuring OAuth for your managed clusters. These child resources can include Strategy, Placement, ClusterOAuth and ManifestWork. The AuthRealm status should be the first place you check if the AuthRealm does not function properly. The AuthRealm status and conditions will allow you to quickly identify any resources that are not working properly and speed up the ability to apply corrective actions to fix the issue.
 
 In addition, each Placement can have one or more PlacementDecision resources associated with it.  The PlacementDecision will list the managed clusters the AuthRealm will be applied to, via ManifestWork.  The name of the PlacementDecision resource will be based on the Placement name and have the format <Placement name>-decision-<number>, where <number> starts at one. 
 
