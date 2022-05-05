@@ -268,10 +268,10 @@ An entry under `identityProviders` has the following fields:
   * `ca` contains reference to the secret containing a trusted Root CA file - file name and format: "ca.crt"
 *Note*: If the server uses self-signed certificates, include files with names "tls.crt" and "tls.key" (representing client certificate and key) in the same secret
   - `attributes` maps LDAP attributes to identities
-    * `id` is the list of attributes whose values should be used as the user ID. Required. First non-empty attribute is used. At least one attribute is required. If none of the liste attribute have a value, authentication fails. LDAP standard identity attribute is "dn"
-    * `preferredUsername` is the list of attributes whose values should be used as the preferred username. LDAP standard login attribute is "uid"
-    * `name` is the list of attributes whose values should be used as the display name. Optional. If unspecified, no display name is set for the identity. LDAP standard display name attribute is "cn"
-    * `email` is the list of attributes whose values should be used as the email address. Optional. If unspecified, no email is set for the identity
+    * `id` is the attribute whose values should be used as the user ID. Required. First non-empty attribute is used. At least one attribute is required. If none of the liste attribute have a value, authentication fails. LDAP standard identity attribute is "dn". 
+    * `preferredUsername` is the attribute used for comparing user entries. It is used as username in UserSearch.
+    * `name` is the attribute whose values should be used as the display name. Optional. If unspecified, no display name is set for the identity. LDAP standard display name attribute is "cn". 
+    * `email` is the attribute whose values should be used as the email address. Optional. If unspecified, no email is set for the identity. 
 
   To create your AuthRealm, copy the sample yaml above and update as appropriate with your ldap configuration, preferred names, namespace, route subdomain, and mapping method. Then, run the following command on your hub cluster:
 
