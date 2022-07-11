@@ -261,7 +261,8 @@ An entry under `identityProviders` has the following fields:
   * `baseDN` contains information to start the LDAP user search from. For example "cn=users,dc=example,dc=com"
   * `filter` contains optional filter to apply when searching the directory. For example "(objectClass=person)"
 - `ldap` contains the LDAP specific configurations:
-  * `url` contains the LDAP host and optional port of the LDAP server
+  * `url` contains the LDAP host and search parameters to use. The url syntax is `ldap://host:port/basedn?attribute?scope?filter`
+  * `insecure` when `false`, "ldap://" URLs are upgraded to a TLS connection using StartTLS. When `true`, "ldap://" URLS connect insecurely. Identity COnfiguration Management Operator does not support insecure=true. 
   * `bindDN` contains an optional DN to bind with during the search phase.
   * `bindPassword` contains an optional reference to a secret by name containing a password to bind with during the search phase.
 *Note*: bindDN and bindPassword need to be provided if the LDAP server requires authentication for search.
@@ -272,6 +273,8 @@ An entry under `identityProviders` has the following fields:
     * `preferredUsername` is the attribute used for comparing user entries. It is used as username in UserSearch.
     * `name` is the attribute whose values should be used as the display name. Optional. If unspecified, no display name is set for the identity. LDAP standard display name attribute is "cn". 
     * `email` is the attribute whose values should be used as the email address. Optional. If unspecified, no email is set for the identity. 
+
+To configure group search for LDAP provider, please refer https://identitatem.github.io/idp-mgmt-docs/groups
 
   To create your AuthRealm, copy the sample yaml above and update as appropriate with your ldap configuration, preferred names, namespace, route subdomain, and mapping method. Then, run the following command on your hub cluster:
 
