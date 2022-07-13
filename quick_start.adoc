@@ -262,17 +262,17 @@ An entry under `identityProviders` has the following fields:
   * `filter` contains optional filter to apply when searching the directory. For example "(objectClass=person)"
 - `ldap` contains the LDAP specific configurations:
   * `url` contains the LDAP host and search parameters to use. The url syntax is `ldap://host:port/basedn?attribute?scope?filter`
-  * `insecure` must be `false`. ldaps:// URLs will attempt to connect using TLS, and ldap:// URLs will be upgraded to TLS. Identity Co Gnfiguration Management Operator does not support insecure=true. 
+  * `insecure` must be `false`. ldaps:// URLs will attempt to connect using TLS, and ldap:// URLs will be upgraded to TLS. The identity configuration management operator does not support insecure=true. 
   * `bindDN` contains an optional DN to bind with during the search phase.
   * `bindPassword` contains an optional reference to a secret by name containing a password to bind with during the search phase.
 *Note*: bindDN and bindPassword need to be provided if the LDAP server requires authentication for search.
   * `ca` contains reference to the secret containing a trusted Root CA file - file name and format: "ca.crt"
 *Note*: If the server uses self-signed certificates, include files with names "tls.crt" and "tls.key" (representing client certificate and key) in the same secret
   - `attributes` maps LDAP attributes to identities
-    * `id` is the attribute whose values should be used as the user ID. Required. First attribute is used. At least one attribute is required. If none of the listed attribute have a value, authentication fails. LDAP standard identity attribute is "dn". 
-    * `preferredUsername` is the attributes whose values should be used as the preferred username. LDAP standard login attribute is "uid". Identity Configuration Management Operator ignore this value. 
-    * `name` is the attribute whose values should be used as the display name. Required. First attribute is used. LDAP standard display name attribute is "cn". 
-    * `email` is the attribute whose values should be used as the email address. Required. First attribute is used. 
+    *  `id` is the attribute whose value should be used as the user ID. Required. Only the first attribute is used; all other values are ignored. If the first attribute does not have a value, authentication fails. LDAP standard identity attribute is "dn".
+    * `preferredUsername` is currently ignored by the identity configuration management operator. 
+    * `name` is the attribute whose values should be used as the display name. Required. Only the first attribute is used; all other values are ignored. LDAP standard display name attribute is "cn". 
+    * `email` is the attribute whose values should be used as the email address. Required. Only the first attribute is used; all other values are ignored.
 
 To configure group search for LDAP provider, please refer https://identitatem.github.io/idp-mgmt-docs/groups
 
